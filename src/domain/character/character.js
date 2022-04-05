@@ -1,10 +1,10 @@
-function buildCreateCharacter({ calculateStamina }) {
+function buildCreateCharacter({ calculateStamina, selectAttack }) {
   return function createCharacter({
     alignment,
     id,
+    name,
     combat = 0,
     durability = 0,
-    filiationCoef,
     intelligence = 0,
     power = 0,
     speed = 0,
@@ -14,26 +14,33 @@ function buildCreateCharacter({ calculateStamina }) {
       throw new Error('Character must have an id');
     }
 
+    if (!name) {
+      throw new Error('Character must have a name');
+    }
+
     if (!alignment) {
       throw new Error('Character must have an alignment');
     }
 
     const stamina = calculateStamina();
-    const fightStats = Object.freeze({
-      combat: calculateFightStat(combat),
-      durability: calculateFightStat(durability),
-      intelligence: calculateFightStat(intelligence),
-      power: calculateFightStat(power),
-      speed: calculateFightStat(speed),
-      strength: calculateFightStat(strength),
-    });
     let hp = calculateInitialHp();
-
-    function calculateFightStat(stat) {
-      const STAT_WEIGHT = 2;
-      const STAT_MODIFIER = 1.1;
-      return ((STAT_WEIGHT * stat + stamina) / STAT_MODIFIER) * filiationCoef;
-    }
+    let filiationCoef = 0;
+    const baseStats = {
+      combat,
+      durability,
+      intelligence,
+      power,
+      speed,
+      strength,
+    };
+    const stats = {
+      combat: 0,
+      durability: 0,
+      intelligence: 0,
+      power: 0,
+      speed: 0,
+      strength: 0,
+    };
 
     function calculateInitialHp() {
       const BASE_HP = 100;
@@ -60,10 +67,9 @@ function buildCreateCharacter({ calculateStamina }) {
       const INTELLIGENCE_WEIGHT = 0.7;
       const SPEED_WEIGHT = 0.2;
       const COMBAT_WEIGHT = 0.1;
-      const weightedIntelligence =
-        fightStats.intelligence * INTELLIGENCE_WEIGHT;
-      const weightedSpeed = fightStats.speed * SPEED_WEIGHT;
-      const weightedCombat = fightStats.combat * COMBAT_WEIGHT;
+      const weightedIntelligence = stats.intelligence * INTELLIGENCE_WEIGHT;
+      const weightedSpeed = stats.speed * SPEED_WEIGHT;
+      const weightedCombat = stats.combat * COMBAT_WEIGHT;
 
       return (
         (weightedIntelligence + weightedSpeed + weightedCombat) * filiationCoef
@@ -74,9 +80,9 @@ function buildCreateCharacter({ calculateStamina }) {
       const STRENGTH_WEIGHT = 0.6;
       const POWER_WEIGHT = 0.2;
       const COMBAT_WEIGHT = 0.2;
-      const weightedStrength = fightStats.strength * STRENGTH_WEIGHT;
-      const weightedPower = fightStats.power * POWER_WEIGHT;
-      const weightedCombat = fightStats.combat * COMBAT_WEIGHT;
+      const weightedStrength = stats.strength * STRENGTH_WEIGHT;
+      const weightedPower = stats.power * POWER_WEIGHT;
+      const weightedCombat = stats.combat * COMBAT_WEIGHT;
 
       return (
         (weightedStrength + weightedPower + weightedCombat) * filiationCoef
@@ -87,9 +93,9 @@ function buildCreateCharacter({ calculateStamina }) {
       const SPEED_WEIGHT = 0.55;
       const DURABILITY_WEIGHT = 0.25;
       const STRENGTH_WEIGHT = 0.2;
-      const weightedSpeed = fightStats.speed * SPEED_WEIGHT;
-      const weightedIntelligence = fightStats.durability * DURABILITY_WEIGHT;
-      const weightedStrength = fightStats.strength * STRENGTH_WEIGHT;
+      const weightedSpeed = stats.speed * SPEED_WEIGHT;
+      const weightedIntelligence = stats.durability * DURABILITY_WEIGHT;
+      const weightedStrength = stats.strength * STRENGTH_WEIGHT;
 
       return (
         (weightedIntelligence + weightedSpeed + weightedStrength) *
@@ -97,21 +103,65 @@ function buildCreateCharacter({ calculateStamina }) {
       );
     }
 
+    function recover() {
+      hp = calculateInitialHp();
+      return hp;
+    }
+
+    function isDefeated() {
+      return hp === 0;
+    }
+
+    function setFightStatsAndAttacks({
+      filiationCoef: calculatedFiliationCoef,
+    }) {
+      filiationCoef = calculatedFiliationCoef;
+
+      Object.keys(stats).forEach(function setFightStat(stat) {
+        stats[stat] = calculateFightStat(baseStats[stat]);
+      });
+    }
+
+    function calculateFightStat(stat) {
+      const STAT_WEIGHT = 2;
+      const STAT_MODIFIER = 1.1;
+      return ((STAT_WEIGHT * stat + stamina) / STAT_MODIFIER) * filiationCoef;
+    }
+
+    function isReadyToFight() {
+      return filiationCoef !== 0;
+    }
+
+    function performRandomAttack() {
+      const selectedAttack = selectAttack([
+        mentalAttack,
+        strongAttack,
+        fastAttack,
+      ]);
+      return selectedAttack();
+    }
+
     return Object.freeze({
       getAlignment: () => alignment,
       getId: () => id,
-      getCombat: () => fightStats.combat,
-      getDurability: () => fightStats.durability,
-      getIntelligence: () => fightStats.intelligence,
-      getPower: () => fightStats.power,
-      getSpeed: () => fightStats.speed,
-      getStrength: () => fightStats.strength,
+      getName: () => name,
+      getCombat: () => stats.combat,
+      getDurability: () => stats.durability,
+      getIntelligence: () => stats.intelligence,
+      getPower: () => stats.power,
+      getSpeed: () => stats.speed,
+      getStrength: () => stats.strength,
       getStamina: () => stamina,
       getHP: () => hp,
       mentalAttack,
       strongAttack,
       fastAttack,
+      setFightStatsAndAttacks,
       takeDamage,
+      recover,
+      isDefeated,
+      isReadyToFight,
+      performRandomAttack,
     });
   };
 }

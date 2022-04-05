@@ -1,9 +1,22 @@
+const { createRandomizer } = require('../../randomizer');
 const { buildCreateCharacter } = require('./character');
 
-const createCharacter = buildCreateCharacter({ calculateStamina });
+const randomize = createRandomizer();
 
 function calculateStamina() {
-  return Math.floor(Math.random() * 10);
+  const MAX_STAMINA_VALUE = 10;
+
+  return randomize({ ceil: MAX_STAMINA_VALUE });
 }
+
+function selectAttack(availableAttacks) {
+  const index = randomize({ ceil: availableAttacks.length });
+  return availableAttacks[index];
+}
+
+const createCharacter = buildCreateCharacter({
+  calculateStamina,
+  selectAttack,
+});
 
 module.exports = { createCharacter };
