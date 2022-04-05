@@ -1,4 +1,4 @@
-const { createRandomizer } = require('../../randomizer');
+const { createRandomizer } = require('../randomizer');
 const { buildCreateCharacter } = require('./character');
 
 const randomize = createRandomizer();
