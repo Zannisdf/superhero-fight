@@ -1,0 +1,19 @@
+# Logs
+*.log
+
+# Dependency directory
+node_modules
+
+# Trash
+.DS_Store
+.idea
+
+# Dynamically processed files
+reports
+coverage
+
+#config development
+.vscode/*
+
+# cache
+.eslintcache
