@@ -9,7 +9,7 @@ const SUPPORTED_METHODS = {
 // so our users can easily extend its behavior without having to deal with
 // prototypes.
 class RestClient {
-  constructor({ config = {} }) {
+  constructor(config = {}) {
     this.config = config;
     this.client = axios.create(config);
   }
