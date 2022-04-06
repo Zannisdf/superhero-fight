@@ -3,12 +3,12 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
     alignment,
     id,
     name,
-    combat = 0,
-    durability = 0,
-    intelligence = 0,
-    power = 0,
-    speed = 0,
-    strength = 0,
+    combat,
+    durability,
+    intelligence,
+    power,
+    speed,
+    strength,
   }) {
     const baseStats = {
       combat,
