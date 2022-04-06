@@ -25,6 +25,11 @@ See it in action here:
   - Recommended Node.js version is the [latest v14 LTS](https://nodejs.org/download/release/latest-v14.x/)
 - Make sure you're using `npm@6.x` by running `npm i -g npm@6`
 - Run `cp .env.example .env` and replace the `API_KEY` value with a valid key for the [Superhero api](https://www.superheroapi.com/).
+- Install the dependencies by running
+
+```bash
+yarn
+```
 
 You may find convenient editing your `.bash_profile` or `.zshrc` to [auto pick the Node version](https://github.com/mercadolibre/frontend/wiki/Auto-Picking-Node-version) of each project.
 
