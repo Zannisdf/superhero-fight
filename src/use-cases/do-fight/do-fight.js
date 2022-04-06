@@ -2,8 +2,8 @@ const { createCharacter } = require('../../character');
 const { createFight } = require('../../fight');
 const { createTeam } = require('../../team');
 
-function buildGetFight({ characterService, getCharacterIds, randomize }) {
-  return async function getFight() {
+function buildDoFight({ characterService, getCharacterIds, randomize }) {
+  return async function doFight() {
     const characters = await getTeamsCharacters();
     const teams = distributeInTeams(characters);
     const fight = createFight({ teams });
@@ -59,4 +59,4 @@ function buildGetFight({ characterService, getCharacterIds, randomize }) {
   };
 }
 
-module.exports = { buildGetFight };
+module.exports = { buildDoFight };

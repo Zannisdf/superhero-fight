@@ -1,4 +1,4 @@
-const { buildGetFight } = require('../get-fight');
+const { buildGetFight } = require('../do-fight');
 
 describe('getFight()', () => {
   it('returns the stats for a fight', async () => {
