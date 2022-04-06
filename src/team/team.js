@@ -58,8 +58,6 @@ function buildCreateTeam({ calculateFiliationBonus }) {
         throw new Error('There are no more active fighters in the team!');
       }
 
-      prepareToFight(currentFighter);
-
       return {
         damage: currentFighter.performRandomAttack(),
         attacker: currentFighter.getName(),
@@ -73,26 +71,27 @@ function buildCreateTeam({ calculateFiliationBonus }) {
         throw new Error('There are no more active fighters in the team!');
       }
 
-      const hp = currentFighter.takeDamage(damage);
-
-      if (currentFighter.isDefeated()) {
-        const nextFighter = switchFighter();
-
-        if (!nextFighter) {
-          setIsDefeated(true);
-        }
-      }
-
-      return { hp, defender: currentFighter.getName() };
+      return {
+        hp: currentFighter.takeDamage(damage),
+        defender: currentFighter.getName(),
+      };
     }
 
-    function prepareToFight(character) {
-      if (!character.isReadyToFight()) {
-        const filiationCoef = calculateFiliationCoef(character.getAlignment());
-        character.setFightStatsAndAttacks({ filiationCoef });
+    function prepareCurrentFighter() {
+      const currentFighter = getCurrentFighter();
+
+      if (!currentFighter.isReadyToFight()) {
+        const filiationCoef = calculateFiliationCoef(
+          currentFighter.getAlignment()
+        );
+        currentFighter.setFightStatsAndAttacks({ filiationCoef });
       }
 
-      return character;
+      return currentFighter;
+    }
+
+    function isCurrentFighterDefeated() {
+      return getCurrentFighter().getHP() === 0;
     }
 
     function calculateFiliationCoef(charAlignment) {
@@ -108,7 +107,13 @@ function buildCreateTeam({ calculateFiliationBonus }) {
 
     function switchFighter() {
       currentFighterIndex++;
-      return getCurrentFighter();
+      const currentFighter = getCurrentFighter();
+
+      if (!currentFighter) {
+        setIsDefeated(true);
+      }
+
+      return currentFighter;
     }
 
     function getCurrentFighter() {
@@ -129,7 +134,7 @@ function buildCreateTeam({ calculateFiliationBonus }) {
       return currentFighter.recover();
     }
 
-    return {
+    return Object.freeze({
       performAttack,
       takeDamage,
       getAlignment: () => alignment,
@@ -139,7 +144,9 @@ function buildCreateTeam({ calculateFiliationBonus }) {
       getCurrentFighter,
       recoverCurrentFighter,
       switchFighter,
-    };
+      prepareCurrentFighter,
+      isCurrentFighterDefeated,
+    });
   };
 }
 

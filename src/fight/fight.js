@@ -24,43 +24,45 @@ function buildCreateFight() {
     }
 
     function playTurn() {
-      const activeTeam = getActiveTeam();
-      const inactiveTeam = getInactiveTeam();
-      const { attacker, damage } = activeTeam.performAttack();
-      const { defender, hp } = inactiveTeam.takeDamage(damage);
+      const attackingTeam = getAttackingTeam();
+      const defendingTeam = getDefendingTeam();
 
-      if (hp === 0) {
-        const nextFighter = inactiveTeam.switchFighter();
-        activeTeam.recoverCurrentFighter();
+      attackingTeam.prepareCurrentFighter();
+      const { attacker, damage } = attackingTeam.performAttack();
+      const { defender, hp } = defendingTeam.takeDamage(damage);
 
-        if (!nextFighter) {
-          setIsFinished(true);
-        }
+      if (defendingTeam.isCurrentFighterDefeated()) {
+        attackingTeam.recoverCurrentFighter();
+        defendingTeam.switchFighter();
+      }
+
+      if (defendingTeam.isDefeated()) {
+        setIsFinished(true);
       }
 
       const turnStats = { id: turn, attacker, damage, defender, hp };
       turnHistory.push(turnStats);
 
-      switchActiveTeam();
+      switchAttackingTeam();
       nextTurn();
 
       return turnStats;
     }
 
-    function getActiveTeam() {
+    function getAttackingTeam() {
       return teams[currentTeamIndex];
     }
 
-    function getInactiveTeam() {
+    function getDefendingTeam() {
       return teams[getNextTeamIndex()];
     }
 
-    function switchActiveTeam() {
+    function switchAttackingTeam() {
       if (!isFinished) {
         currentTeamIndex = getNextTeamIndex();
       }
 
-      return getActiveTeam();
+      return getAttackingTeam();
     }
 
     function nextTurn() {
@@ -81,18 +83,18 @@ function buildCreateFight() {
     }
 
     function getWinner() {
-      return isFinished ? getActiveTeam() : null;
+      return isFinished ? getAttackingTeam() : null;
     }
 
-    return {
+    return Object.freeze({
       isFinished: () => isFinished,
       getTurn: () => turn,
       getTurnHistory: () => turnHistory,
-      getActiveTeam,
-      getInactiveTeam,
+      getAttackingTeam,
+      getDefendingTeam,
       getWinner,
       start,
-    };
+    });
   };
 }
 
