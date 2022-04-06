@@ -5,6 +5,14 @@ const DEFAULT_ID = 1;
 const DEFAULT_ALIGNMENT = 'good';
 const DEFAULT_FILIATION_COEF = 1;
 const DEFAULT_NAME = 'Batman';
+const DEFAULT_COMBAT_STATS = {
+  combat: 1,
+  durability: 1,
+  intelligence: 1,
+  power: 1,
+  speed: 1,
+  strength: 1,
+};
 
 const createCharacter = buildCreateCharacter({
   calculateStamina: () => DEFAULT_STAMINA,
@@ -246,6 +254,7 @@ function buildCharacterAttrs(overrides = {}) {
     alignment: DEFAULT_ALIGNMENT,
     filiationCoef: DEFAULT_FILIATION_COEF,
     name: DEFAULT_NAME,
+    ...DEFAULT_COMBAT_STATS,
     ...overrides,
   };
 }

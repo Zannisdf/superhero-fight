@@ -1,4 +1,4 @@
-const { buildGetFight } = require('../do-fight');
+const { buildDoFight } = require('../do-fight');
 
 describe('getFight()', () => {
   it('returns the stats for a fight', async () => {
@@ -6,7 +6,7 @@ describe('getFight()', () => {
     mockCharacterService.getCharactersInfo.mockImplementation(
       createCharacterCollectionFixtures
     );
-    const getFight = buildGetFight({
+    const getFight = buildDoFight({
       characterService: mockCharacterService,
       getCharacterIds: mockGetCharacterIds,
       randomize: createMockRandomizer(),
@@ -49,14 +49,16 @@ function createCharacterCollectionFixtures(ids) {
 function createCharacterFixtures(id) {
   return {
     id,
-    alignment: id % 2 === 0 ? 'good' : 'bad',
     name: `hero-${id}`,
-    combat: 1,
-    durability: 1,
-    intelligence: 1,
-    power: 1,
-    speed: 1,
-    strength: 1,
+    powerstats: {
+      combat: 1,
+      durability: 1,
+      intelligence: 1,
+      power: 1,
+      speed: 1,
+      strength: 1,
+    },
+    biography: { alignment: id % 2 === 0 ? 'good' : 'bad' },
   };
 }
 

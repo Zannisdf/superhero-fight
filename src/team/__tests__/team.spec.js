@@ -62,22 +62,26 @@ describe('createTeam', () => {
   });
 
   describe('isDefeated()', () => {
-    it('returns false if there are any characters with hp greater than 0', () => {
+    it('returns false if there are any active characters', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
 
       expect(team.isDefeated()).toBe(false);
+
+      team.switchFighter();
+
+      expect(team.isDefeated()).toBe(false);
     });
 
-    it('returns true if all characters have no hp left', () => {
+    it('returns true if there arent any active characters left', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
 
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
 
       expect(team.isDefeated()).toBe(true);
     });
@@ -90,7 +94,7 @@ describe('createTeam', () => {
 
       expect(team.getCurrentFighter()).toBe(characters[0]);
 
-      team.takeDamage(100);
+      team.switchFighter();
 
       expect(team.getCurrentFighter()).toBe(characters[1]);
     });
@@ -99,63 +103,17 @@ describe('createTeam', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
 
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
 
       expect(team.getCurrentFighter()).toBeNull();
     });
   });
 
   describe('performAttack()', () => {
-    it('marks the active character as ready to fight', () => {
-      const characters = buildMockCharacterCollection();
-      const team = createTeam({ characters });
-
-      expect(team.getCurrentFighter().isReadyToFight()).toBe(false);
-
-      team.performAttack();
-
-      expect(team.getCurrentFighter().isReadyToFight()).toBe(true);
-    });
-
-    it('does not mark the active character as ready to fight if it was previously marked', () => {
-      const characters = buildMockCharacterCollection();
-      const team = createTeam({ characters });
-
-      team.performAttack();
-      team.performAttack();
-
-      expect(
-        team.getCurrentFighter().setFightStatsAndAttacks
-      ).toHaveBeenCalledTimes(1);
-    });
-
-    it('invokes `character.setFightStatsAndAttacks` with the filiation coef based on the character alignment', () => {
-      const characters = buildMockCharacterCollection((_, index) =>
-        buildMockCharacter({
-          id: index,
-          alignment: index === 0 ? 'good' : 'bad',
-        })
-      );
-      const team = createTeam({ characters });
-
-      team.performAttack();
-
-      expect(
-        team.getCurrentFighter().setFightStatsAndAttacks
-      ).toHaveBeenCalledWith({ filiationCoef: 0.5 });
-
-      team.takeDamage(100);
-      team.performAttack();
-
-      expect(
-        team.getCurrentFighter().setFightStatsAndAttacks
-      ).toHaveBeenCalledWith({ filiationCoef: 2 });
-    });
-
     it('returns an object with the damage dealt and attacker name', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
@@ -170,11 +128,11 @@ describe('createTeam', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
 
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
 
       expect(() => team.performAttack()).toThrowError(
         'There are no more active fighters in the team!'
@@ -192,24 +150,15 @@ describe('createTeam', () => {
       expect(team.getCurrentFighter().getHP()).toStrictEqual(50);
     });
 
-    it('swaps the current character when defeated', () => {
-      const characters = buildMockCharacterCollection();
-      const team = createTeam({ characters });
-
-      team.takeDamage(100);
-
-      expect(team.getCurrentFighter()).toBe(characters[1]);
-    });
-
     it('throws an error when invoked on a defeated team', () => {
       const characters = buildMockCharacterCollection();
       const team = createTeam({ characters });
 
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
-      team.takeDamage(100);
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
+      team.switchFighter();
 
       expect(() => team.takeDamage(100)).toThrowError(
         'There are no more active fighters in the team!'
@@ -236,6 +185,74 @@ describe('createTeam', () => {
       const hp = team.recoverCurrentFighter();
 
       expect(hp).toEqual(100);
+    });
+  });
+
+  describe('prepareCurrentFighter()', () => {
+    it('marks the active character as ready to fight', () => {
+      const characters = buildMockCharacterCollection();
+      const team = createTeam({ characters });
+
+      expect(team.getCurrentFighter().isReadyToFight()).toBe(false);
+
+      team.prepareCurrentFighter();
+
+      expect(team.getCurrentFighter().isReadyToFight()).toBe(true);
+    });
+
+    it('does not mark the active character as ready to fight if it was previously marked', () => {
+      const characters = buildMockCharacterCollection();
+      const team = createTeam({ characters });
+
+      team.prepareCurrentFighter();
+      team.prepareCurrentFighter();
+
+      expect(
+        team.getCurrentFighter().setFightStatsAndAttacks
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('invokes `character.setFightStatsAndAttacks` with the filiation coef based on the character alignment', () => {
+      const characters = buildMockCharacterCollection((_, index) =>
+        buildMockCharacter({
+          id: index,
+          alignment: index === 0 ? 'good' : 'bad',
+        })
+      );
+      const team = createTeam({ characters });
+
+      team.prepareCurrentFighter();
+
+      expect(
+        team.getCurrentFighter().setFightStatsAndAttacks
+      ).toHaveBeenCalledWith({ filiationCoef: 0.5 });
+
+      team.switchFighter();
+      team.prepareCurrentFighter();
+
+      expect(
+        team.getCurrentFighter().setFightStatsAndAttacks
+      ).toHaveBeenCalledWith({ filiationCoef: 2 });
+    });
+  });
+
+  describe('isCurrentFighterDefeated()', () => {
+    it('returns true if the fighters hp is zero', () => {
+      const characters = buildMockCharacterCollection();
+      const team = createTeam({ characters });
+
+      team.takeDamage(100);
+
+      expect(team.isCurrentFighterDefeated()).toBe(true);
+    });
+
+    it('returns false if the fighters hp is greater than zero', () => {
+      const characters = buildMockCharacterCollection();
+      const team = createTeam({ characters });
+
+      team.takeDamage(50);
+
+      expect(team.isCurrentFighterDefeated()).toBe(false);
     });
   });
 });
