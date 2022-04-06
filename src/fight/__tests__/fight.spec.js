@@ -24,21 +24,21 @@ describe('createFight', () => {
     });
   });
 
-  describe('getActiveTeam()', () => {
+  describe('getAttackingTeam()', () => {
     it('returns the attacking team', () => {
       const teams = [buildMockTeam(), buildMockTeam()];
       const fight = createFight({ teams });
 
-      expect(fight.getActiveTeam()).toBe(teams[0]);
+      expect(fight.getAttackingTeam()).toBe(teams[0]);
     });
   });
 
-  describe('getInactiveTeam()', () => {
+  describe('getDefendingTeam()', () => {
     it('returns the defending team', () => {
       const teams = [buildMockTeam(), buildMockTeam()];
       const fight = createFight({ teams });
 
-      expect(fight.getInactiveTeam()).toBe(teams[1]);
+      expect(fight.getDefendingTeam()).toBe(teams[1]);
     });
   });
 
@@ -135,6 +135,12 @@ function buildMockTeam(overrides = {}) {
       heroHP = Math.max(heroHP - damage, 0);
       return { defender: 'defender', hp: heroHP };
     }),
+    prepareCurrentFighter: jest.fn(),
+    isCurrentFighterDefeated: jest
+      .fn()
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true),
+    isDefeated: jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(true),
     switchFighter: jest.fn().mockReturnValueOnce(null),
     recoverCurrentFighter: jest.fn(),
     ...overrides,
