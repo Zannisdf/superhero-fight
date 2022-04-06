@@ -10,19 +10,19 @@ function buildDoFight({ characterService, getCharacterIds, randomize }) {
 
     fight.start();
 
-    return {
+    return Object.freeze({
       turns: fight.getTurn(),
       teams: teams.map(getTeamInfo),
       winner: getName(fight.getWinner()),
       history: fight.getTurnHistory(),
-    };
+    });
 
     async function getTeamsCharacters() {
       const availableIds = await getCharacterIds();
       const validIds = getTeamsUniqueIds(availableIds);
       const info = await characterService.getCharactersInfo(validIds);
 
-      return info.map(createCharacter);
+      return info.map(getCharacter);
     }
 
     function distributeInTeams(chars) {
@@ -55,6 +55,33 @@ function buildDoFight({ characterService, getCharacterIds, randomize }) {
       }
 
       return Array.from(uniqueIds);
+    }
+
+    function getCharacter({
+      id,
+      name,
+      powerstats: { intelligence, strength, speed, durability, power, combat },
+      biography: { alignment },
+    }) {
+      return createCharacter({
+        id: Number(id),
+        intelligence: getValidStatValue(intelligence),
+        strength: getValidStatValue(strength),
+        speed: getValidStatValue(speed),
+        durability: getValidStatValue(durability),
+        power: getValidStatValue(power),
+        combat: getValidStatValue(combat),
+        alignment,
+        name,
+      });
+    }
+
+    // Some characters do not have fighting stats. By setting a default value we ensure all
+    // of them can fight. Eventually we could disqualify if they don't meet the conditions,
+    // but this will do for now.
+    function getValidStatValue(value) {
+      const MIN_STAT_VALUE = 1;
+      return Number(value) || MIN_STAT_VALUE;
     }
   };
 }
