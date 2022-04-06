@@ -1,0 +1,93 @@
+{
+  "turns": 11,
+  "teams": [
+    {
+      "name": "Adam Monroe's team",
+      "members": ["Adam Monroe", "Genesis", "Feral", "Man-Wolf", "Violet Parr"]
+    },
+    {
+      "name": "Bumbleboy's team",
+      "members": ["Bumbleboy", "Kevin 11", "Arachne", "Mister Knife", "Watcher"]
+    }
+  ],
+  "winner": "Adam Monroe's team",
+  "history": [
+    {
+      "id": 1,
+      "attacker": "Adam Monroe",
+      "damage": 3260.727272727272,
+      "defender": "Bumbleboy",
+      "hp": 0
+    },
+    {
+      "id": 2,
+      "attacker": "Kevin 11",
+      "damage": 1053.090909090909,
+      "defender": "Adam Monroe",
+      "hp": 0
+    },
+    {
+      "id": 3,
+      "attacker": "Genesis",
+      "damage": 104.72727272727272,
+      "defender": "Kevin 11",
+      "hp": 99.1327272727273
+    },
+    {
+      "id": 4,
+      "attacker": "Kevin 11",
+      "damage": 1053.090909090909,
+      "defender": "Genesis",
+      "hp": 0
+    },
+    {
+      "id": 5,
+      "attacker": "Feral",
+      "damage": 666,
+      "defender": "Kevin 11",
+      "hp": 0
+    },
+    {
+      "id": 6,
+      "attacker": "Arachne",
+      "damage": 418.90909090909093,
+      "defender": "Feral",
+      "hp": 0
+    },
+    {
+      "id": 7,
+      "attacker": "Man-Wolf",
+      "damage": 9219.272727272726,
+      "defender": "Arachne",
+      "hp": 0
+    },
+    {
+      "id": 8,
+      "attacker": "Mister Knife",
+      "damage": 5.07070707070707,
+      "defender": "Man-Wolf",
+      "hp": 199.04929292929293
+    },
+    {
+      "id": 9,
+      "attacker": "Man-Wolf",
+      "damage": 9219.272727272726,
+      "defender": "Mister Knife",
+      "hp": 0
+    },
+    {
+      "id": 10,
+      "attacker": "Watcher",
+      "damage": 13180.90909090909,
+      "defender": "Man-Wolf",
+      "hp": 0
+    },
+    {
+      "id": 11,
+      "attacker": "Violet Parr",
+      "damage": 7039.636363636362,
+      "defender": "Watcher",
+      "hp": 0
+    }
+  ]
+}

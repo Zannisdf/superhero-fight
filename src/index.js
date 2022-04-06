@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { getFight, notFound } = require('./controllers');
+const { getFight, notFound, getFightLog } = require('./controllers');
 const { buildRequestHandler } = require('./request-handler');
 
 dotenv.config();
@@ -11,6 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/api/fight', buildRequestHandler(getFight));
+app.get('/fight', buildRequestHandler(getFightLog));
 app.use('*', buildRequestHandler(notFound));
 
 app.listen(APP_PORT, () => {
