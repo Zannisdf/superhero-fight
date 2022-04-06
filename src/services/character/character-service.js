@@ -13,8 +13,10 @@ function createCharacterService({ restclient, getSecret }) {
   }
 
   function getCharacterInfo(id) {
-    const ENDPOINT = `api.php/${getSecret('apiKey')}/${id}`;
-    return restclient.get(ENDPOINT).then(({ data }) => data);
+    const ENDPOINT = `api.php/${getSecret()}/${id}`;
+    return restclient
+      .get(`${BASE_SERVICE_URL}/${ENDPOINT}`)
+      .then(({ data }) => data);
   }
 
   return Object.freeze({
