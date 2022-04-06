@@ -10,6 +10,15 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
     speed = 0,
     strength = 0,
   }) {
+    const baseStats = {
+      combat,
+      durability,
+      intelligence,
+      power,
+      speed,
+      strength,
+    };
+
     if (!id) {
       throw new Error('Character must have an id');
     }
@@ -22,17 +31,13 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
       throw new Error('Character must have an alignment');
     }
 
+    if (!areValidBaseStats()) {
+      throw new Error('All stats must be numbers');
+    }
+
     const stamina = calculateStamina();
     let hp = calculateInitialHp();
     let filiationCoef = 0;
-    const baseStats = {
-      combat,
-      durability,
-      intelligence,
-      power,
-      speed,
-      strength,
-    };
     const stats = {
       combat: 0,
       durability: 0,
@@ -41,6 +46,20 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
       speed: 0,
       strength: 0,
     };
+
+    function areValidBaseStats() {
+      const stats = Object.keys(baseStats);
+
+      for (let i = 0; i < stats.length; i++) {
+        const currentStat = stats[i];
+
+        if (!isNumber(baseStats[currentStat])) {
+          return false;
+        }
+      }
+
+      return true;
+    }
 
     function calculateInitialHp() {
       const BASE_HP = 100;
@@ -115,6 +134,10 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
     function setFightStatsAndAttacks({
       filiationCoef: calculatedFiliationCoef,
     }) {
+      if (!isNumber(calculatedFiliationCoef)) {
+        throw new Error('Filiation coeficient must be a number');
+      }
+
       filiationCoef = calculatedFiliationCoef;
 
       Object.keys(stats).forEach(function setFightStat(stat) {
@@ -139,6 +162,10 @@ function buildCreateCharacter({ calculateStamina, selectAttack }) {
         fastAttack,
       ]);
       return selectedAttack();
+    }
+
+    function isNumber(arg) {
+      return typeof arg === 'number';
     }
 
     return Object.freeze({
