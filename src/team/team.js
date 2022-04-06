@@ -61,7 +61,7 @@ function buildCreateTeam({ calculateFiliationBonus }) {
       prepareToFight(currentFighter);
 
       return {
-        damage: currentFighter.attack(),
+        damage: currentFighter.performRandomAttack(),
         attacker: currentFighter.getName(),
       };
     }
@@ -89,7 +89,7 @@ function buildCreateTeam({ calculateFiliationBonus }) {
     function prepareToFight(character) {
       if (!character.isReadyToFight()) {
         const filiationCoef = calculateFiliationCoef(character.getAlignment());
-        character.setFightStatsAndAttacks(filiationCoef);
+        character.setFightStatsAndAttacks({ filiationCoef });
       }
 
       return character;
@@ -138,6 +138,7 @@ function buildCreateTeam({ calculateFiliationBonus }) {
       isDefeated: () => isDefeated,
       getCurrentFighter,
       recoverCurrentFighter,
+      switchFighter,
     };
   };
 }

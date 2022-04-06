@@ -20,7 +20,7 @@ function buildMockCharacter(overrides = {}) {
       isReadyToFight = true;
     }),
     isDefeated: () => isDefeated,
-    attack: jest.fn().mockImplementation(() => 100),
+    performRandomAttack: jest.fn().mockImplementation(() => 100),
     takeDamage: jest.fn().mockImplementation((dmg) => {
       hp = Math.max(hp - dmg, 0);
 

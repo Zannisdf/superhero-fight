@@ -31,7 +31,7 @@ function buildCreateFight() {
 
       if (hp === 0) {
         const nextFighter = inactiveTeam.switchFighter();
-        activeTeam.restoreCurrentFighter();
+        activeTeam.recoverCurrentFighter();
 
         if (!nextFighter) {
           setIsFinished(true);

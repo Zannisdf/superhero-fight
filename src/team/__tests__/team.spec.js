@@ -146,14 +146,14 @@ describe('createTeam', () => {
 
       expect(
         team.getCurrentFighter().setFightStatsAndAttacks
-      ).toHaveBeenCalledWith(0.5);
+      ).toHaveBeenCalledWith({ filiationCoef: 0.5 });
 
       team.takeDamage(100);
       team.performAttack();
 
       expect(
         team.getCurrentFighter().setFightStatsAndAttacks
-      ).toHaveBeenCalledWith(2);
+      ).toHaveBeenCalledWith({ filiationCoef: 2 });
     });
 
     it('returns an object with the damage dealt and attacker name', () => {

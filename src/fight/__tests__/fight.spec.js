@@ -136,7 +136,7 @@ function buildMockTeam(overrides = {}) {
       return { defender: 'defender', hp: heroHP };
     }),
     switchFighter: jest.fn().mockReturnValueOnce(null),
-    restoreCurrentFighter: jest.fn(),
+    recoverCurrentFighter: jest.fn(),
     ...overrides,
   };
 }
